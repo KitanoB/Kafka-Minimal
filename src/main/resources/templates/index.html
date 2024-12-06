@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Kafka SSE Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            padding: 5px;
+            border-bottom: 1px solid #ddd;
+        }
+        #randomBtn {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<h1>Live Kafka Messages</h1>
+
+<h2>Send a Custom Person</h2>
+<form id="personForm">
+    <label for="firstName">First Name:</label>
+    <input type="text" id="firstName" name="firstName" required/>
+    <br>
+    <label for="lastName">Last Name:</label>
+    <input type="text" id="lastName" name="lastName" required/>
+    <br>
+    <label for="age">Age:</label>
+    <input type="number" id="age" name="age" required/>
+    <br><br>
+    <button type="submit">Send Person</button>
+    <button type="button" id="randomBtn">Générer aléatoirement</button>
+</form>
+
+<h2>Live Messages</h2>
+<ul id="liveMessages"></ul>
+
+<script>
+    const messageList = document.getElementById('liveMessages');
+    let eventSource;
+
+    function connectSSE() {
+        if (eventSource && eventSource.readyState !== EventSource.CLOSED) {
+            return;
+        }
+
+        eventSource = new EventSource('/stream');
+
+        eventSource.onmessage = function(event) {
+            console.log("SSE message received: ", event.data);
+
+            const newMessage = document.createElement('li');
+            newMessage.textContent = event.data;
+            messageList.appendChild(newMessage);
+        };
+
+        eventSource.onerror = function(error) {
+            console.error("SSE connection error: ", error);
+            const errorMessage = document.createElement('li');
+            errorMessage.textContent = "Connection lost. Reconnecting...";
+            errorMessage.style.color = "red";
+            messageList.appendChild(errorMessage);
+
+            eventSource.close();
+
+            setTimeout(() => {
+                connectSSE();
+            }, 3000);
+        };
+    }
+
+    const form = document.getElementById('personForm');
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const firstName = document.getElementById('firstName').value;
+        const lastName  = document.getElementById('lastName').value;
+        const age       = document.getElementById('age').value;
+
+        try {
+            const response = await fetch('/sendCustomPerson', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ firstName, lastName, age })
+            });
+
+            if (!response.ok) {
+                console.error('Error sending person:', response.statusText);
+            }
+        } catch (err) {
+            console.error('Fetch error:', err);
+        }
+    });
+
+    // Ajout d'un tableau de prénoms et noms pour la génération aléatoire
+    const firstNames = ["Alice", "Bob", "Charlie", "Diane", "Ethan", "Fiona", "Georges", "Hélène"];
+    const lastNames = ["Durand", "Dupont", "Martin", "Bernard", "Thomas", "Petit", "Robert", "Richard"];
+
+    const randomBtn = document.getElementById('randomBtn');
+    randomBtn.addEventListener('click', () => {
+        // Génération aléatoire
+        const randomFirstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+        const randomLastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+        const randomAge = Math.floor(Math.random() * 60) + 18; // Entre 18 et 77 ans
+
+        // Remplir les champs
+        document.getElementById('firstName').value = randomFirstName;
+        document.getElementById('lastName').value = randomLastName;
+        document.getElementById('age').value = randomAge;
+    });
+
+    connectSSE();
+</script>
+</body>
+</html>
