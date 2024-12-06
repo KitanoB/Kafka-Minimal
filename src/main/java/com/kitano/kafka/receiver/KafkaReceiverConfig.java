@@ -19,22 +19,42 @@ import java.util.Map;
 @Configuration
 public class KafkaReceiverConfig {
 
-    @Value(value = "${kafka.bootstrapAddress:kafka:9092}") // Kafka server address (it is possible to configure it via application.properties)
+    @Value(value = "${kafka.bootstrapAddress:kafka:9092}") // Kafka server address (default to docker-compose setup)
     private String bootstrapAddress;
 
-    private static final String groupId = "Tutorial"; // Group ID : Tutorial
+    private static final String groupId = "Tutorial";
 
+
+    /**
+     * Configure the Kafka Consumer Factory to deserialize Person objects
+     *
+     * @return ConsumerFactory for String key and Person value
+     */
     @Bean
     public ConsumerFactory<String, Person> receiverFactory() {
         Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,bootstrapAddress); // Server address configuration
-        props.put(ConsumerConfig.GROUP_ID_CONFIG,groupId); // Group ID configuration
-        return new DefaultKafkaConsumerFactory<>(props,new StringDeserializer(),new JsonDeserializer<>(Person.class));
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress); // Kafka broker address
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId); // Consumer group ID
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class); // Key deserializer
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class); // Value deserializer
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");
+
+        // Configure the JsonDeserializer for the Person class
+        JsonDeserializer<Person> deserializer = new JsonDeserializer<>(Person.class);
+        deserializer.addTrustedPackages("*"); // Trust all packages for deserialization
+
+        return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), deserializer);
     }
 
+    /**
+     * Create the Kafka Listener Container Factory
+     *
+     * @return ConcurrentKafkaListenerContainerFactory for String key and Person value
+     */
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, Person> kafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, Person> factory =new ConcurrentKafkaListenerContainerFactory<>();
+        ConcurrentKafkaListenerContainerFactory<String, Person> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(receiverFactory());
         return factory;
     }
