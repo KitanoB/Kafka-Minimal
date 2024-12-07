@@ -1,8 +1,8 @@
-version: '3.5'
+version: '3.7'
 
 services:
   zookeeper:
-    image: zookeeper
+    image: zookeeper:3.7.0
     ports:
       - "2181:2181"
   kafka:
@@ -10,12 +10,10 @@ services:
     ports:
       - "9092:9092"
     environment:
-      # HOSTNAME_COMMAND: "route -n | awk '/UG[ \t]/{print $$2}'"
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_ADVERTISED_HOST_NAME: kafka
       KAFKA_ADVERTISED_PORT: 9092
       KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_JMX_OPTS: "-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=kafka -Dcom.sun.management.jmxremote.rmi.port=1099"
       JMX_PORT: 1099
     volumes:
@@ -31,3 +29,9 @@ services:
       - kafka
     environment:
       ZK_HOSTS: zookeeper:2181
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090

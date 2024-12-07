@@ -20,7 +20,7 @@ import java.util.Map;
 public class KafkaReceiverConfig {
 
     private static final String groupId = "Tutorial";
-    @Value(value = "${kafka.bootstrapAddress:kafka:9092}") // Kafka server address (default to docker-compose setup)
+    @Value(value = "${kafka.bootstrapAddress}")
     private String bootstrapAddress;
 
     /**
