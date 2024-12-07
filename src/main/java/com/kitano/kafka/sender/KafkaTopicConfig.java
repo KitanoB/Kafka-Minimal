@@ -12,7 +12,8 @@ import java.util.Map;
 @Configuration
 public class KafkaTopicConfig {
 
-    @Value(value = "${kafka.bootstrapAddress:kafka:9092}") // Kafka server address (it is possible to configure it via application.properties)
+    @Value(value = "${kafka.bootstrapAddress:kafka:9092}")
+    // Kafka server address (it is possible to configure it via application.properties)
     private String bootstrapAddress;
 
     @Bean

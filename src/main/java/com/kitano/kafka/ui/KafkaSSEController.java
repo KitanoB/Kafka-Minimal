@@ -14,7 +14,7 @@ public class KafkaSSEController {
 
     @GetMapping("/stream")
     public SseEmitter stream() {
-        // Timeout d'une heure (3600 000 ms)
+        // Timeout (3600 000 ms)
         SseEmitter emitter = new SseEmitter(60 * 60 * 1000L);
         kafkaListenerService.getEmitters().add(emitter);
 

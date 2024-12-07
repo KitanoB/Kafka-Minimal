@@ -98,9 +98,6 @@ This project highlights:
 
 ```
 .
-├── DOCS
-│   ├── docker-compose.yml
-│   └── dockercompose.png
 ├── HELP.md
 ├── README.md
 ├── mvnw
@@ -108,41 +105,34 @@ This project highlights:
 ├── pom.xml
 ├── project-structure.txt
 └── src
-    ├── main
-    │   ├── java
-    │   │   └── com
-    │   │       └── kitano
-    │   │           └── kafka
-    │   │               ├── KafkaApplication.java
-    │   │               ├── dto
-    │   │               │   └── Person.java
-    │   │               ├── receiver
-    │   │               │   ├── IProcess.java
-    │   │               │   ├── IReceiver.java
-    │   │               │   ├── KafkaReceiver.java
-    │   │               │   ├── KafkaReceiverConfig.java
-    │   │               │   └── ProcessExample.java
-    │   │               ├── sender
-    │   │               │   ├── ISender.java
-    │   │               │   ├── KafkaSender.java
-    │   │               │   ├── KafkaSenderConfig.java
-    │   │               │   └── KafkaTopicConfig.java
-    │   │               ├── service
-    │   │               │   └── KafkaListenerService.java
-    │   │               └── ui
-    │   │                   ├── HealthCheckController.java
-    │   │                   ├── KafkaSSEController.java
-    │   │                   └── KafkaUIController.java
-    │   └── resources
-    │       ├── application.properties
-    │       └── templates
-    │           └── index.html
-    └── test
-        └── java
-            └── com
-                └── kitano
-                    └── kafka
-                        └── KafkaApplicationTests.java
+    └── main
+        ├── java
+        │   └── com
+        │       └── kitano
+        │           └── kafka
+        │               ├── KafkaApplication.java
+        │               ├── dto
+        │               │   └── Person.java
+        |               ├── iface
+        │               │   ├── ISender.java
+        │               │   ├── IReceiver.java   
+        │               ├── receiver
+        │               │   ├── KafkaReceiverImpl.java
+        │               │   ├── KafkaReceiverConfig.java
+        │               ├── sender
+        │               │   ├── KafkaSenderImpl.java
+        │               │   ├── KafkaSenderConfig.java
+        │               │   └── KafkaTopicConfig.java
+        │               ├── service
+        │               │   └── KafkaListenerService.java
+        │               └── ui
+        │                   ├── KafkaSSEController.java
+        │                   └── KafkaUIController.java
+        └── resources
+            ├── application.properties
+            └── templates
+                └── index.html
+
 ```
 
 ---

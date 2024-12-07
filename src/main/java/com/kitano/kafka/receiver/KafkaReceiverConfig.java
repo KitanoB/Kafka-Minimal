@@ -19,11 +19,9 @@ import java.util.Map;
 @Configuration
 public class KafkaReceiverConfig {
 
+    private static final String groupId = "Tutorial";
     @Value(value = "${kafka.bootstrapAddress:kafka:9092}") // Kafka server address (default to docker-compose setup)
     private String bootstrapAddress;
-
-    private static final String groupId = "Tutorial";
-
 
     /**
      * Configure the Kafka Consumer Factory to deserialize Person objects

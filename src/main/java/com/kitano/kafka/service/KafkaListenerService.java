@@ -14,10 +14,7 @@ import java.util.List;
 @Service
 public class KafkaListenerService {
 
-    // Liste synchronisée d'emitters pour SSE
     private final List<SseEmitter> emitters = Collections.synchronizedList(new ArrayList<>());
-
-    // Liste synchronisée des messages reçus (optionnel, si besoin d'historique)
     private final List<String> receivedMessages = Collections.synchronizedList(new ArrayList<>());
 
     public List<String> getReceivedMessages() {
@@ -39,12 +36,11 @@ public class KafkaListenerService {
             while (iterator.hasNext()) {
                 SseEmitter emitter = iterator.next();
                 try {
-                    // Envoi d'un événement SSE par défaut (type "message")
                     emitter.send(SseEmitter.event().data(message));
                     System.out.println("Message sent to SSE client: " + message);
                 } catch (IOException e) {
                     System.err.println("Failed to send message via SSE: " + e.getMessage());
-                    iterator.remove(); // On supprime l'emitter déconnecté
+                    iterator.remove();
                     System.out.println("Removed disconnected SSE emitter. Total emitters: " + emitters.size());
                 }
             }

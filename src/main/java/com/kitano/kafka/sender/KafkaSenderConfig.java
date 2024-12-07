@@ -17,13 +17,14 @@ import java.util.Map;
 @Configuration
 public class KafkaSenderConfig {
 
-    @Value(value = "${kafka.bootstrapAddress:kafka:9092}") // Kafka server address (it is possible to configure it via application.properties)
+    @Value(value = "${kafka.bootstrapAddress:kafka:9092}")
+    // Kafka server address (it is possible to configure it via application.properties)
     private String bootstrapAddress;
 
     @Bean
     public ProducerFactory<String, Person> senderFactory() {
         Map<String, Object> configProps = new HashMap<>();
-        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,bootstrapAddress); // Server address configuration
+        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress); // Server address configuration
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
         return new DefaultKafkaProducerFactory<String, Person>(configProps);

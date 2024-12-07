@@ -1,4 +1,4 @@
-package com.kitano.kafka.sender;
+package com.kitano.kafka.iface;
 
 import com.kitano.kafka.dto.Person;
 

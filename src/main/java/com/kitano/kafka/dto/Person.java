@@ -18,6 +18,7 @@ public class Person {
     public String getFirstName() {
         return firstName;
     }
+
     public void setFirstName(String msg) {
         this.firstName = msg;
     }
@@ -40,6 +41,6 @@ public class Person {
 
     @Override
     public String toString() {
-        return     "{firstName:\""+firstName+"\", lastName:\""+lastName+"\", age:"+String.valueOf(age)+"}";
+        return "{firstName:\"" + firstName + "\", lastName:\"" + lastName + "\", age:" + String.valueOf(age) + "}";
     }
 }
